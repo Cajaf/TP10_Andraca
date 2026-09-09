@@ -64,7 +64,7 @@ export default function HomeScreen() {
   const emailRegex = /^[^\s@]+@[^\s@]+$/;
 
   const isFormValid =
-    formValues.nombreCompleto.length >= 3 &&
+    formValues.nombreCompleto.trim().length >= 3 &&
     emailRegex.test(formValues.email) &&
     Number(formValues.edad) >= 12 &&
     Number(formValues.edad) <= 99 &&
