@@ -1,98 +1,214 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { FormInput } from '@/components/FormInput';
+import { FestivalFormValues } from '@/components/InscriptionSummary';
+import { TicketConfirmation } from '@/components/TicketConfirmacion';
+import { TicketTypeSelector } from '@/components/TicketTypeSelector';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+const ticketOptions = [
+  { label: 'General', value: 'General' },
+  { label: 'VIP', value: 'VIP' },
+  { label: 'Backstage', value: 'Backstage' },
+];
 
 export default function HomeScreen() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [submittedData, setSubmittedData] = useState<FestivalFormValues | null>(null);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FestivalFormValues>({
+    defaultValues: {
+      nombreCompleto: '',
+      email: '',
+      edad: '',
+      tipoEntrada: '',
+      telefono: '',
+    },
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
+  });
+
+  const onSubmit = (data: FestivalFormValues) => {
+    setSubmittedData(data);
+    setModalVisible(true);
+  };
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={styles.screen}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        <View style={styles.card}>
+          <Text style={styles.title}>Sonido Sur</Text>
+          <Text style={styles.subtitle}>Inscripción al festival</Text>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+          <Controller
+            control={control}
+            name="nombreCompleto"
+            rules={{
+              required: 'Ingresá tu nombre completo',
+              validate: (value) => value.trim().length >= 3 || 'Ingresá tu nombre completo',
+            }}
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                label="Nombre completo"
+                value={value}
+                placeholder="Ingresá tu nombre completo"
+                onChangeText={onChange}
+                error={errors.nombreCompleto?.message}
+              />
+            )}
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+          <Controller
+            control={control}
+            name="email"
+            rules={{
+              required: 'Ingresá un email válido',
+              validate: (value) =>
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || 'Ingresá un email válido',
+            }}
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                label="Email"
+                value={value}
+                placeholder="ejemplo@correo.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                onChangeText={onChange}
+                error={errors.email?.message}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="edad"
+            rules={{
+              required: 'La edad tiene que ser mayor a 12',
+              validate: (value) => {
+                const numericValue = Number(value);
+                return (
+                  (!Number.isNaN(numericValue) && numericValue >= 12 && numericValue <= 99) ||
+                  'La edad tiene que ser mayor a 12'
+                );
+              },
+            }}
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                label="Edad"
+                value={value}
+                placeholder="Ej: 22"
+                keyboardType="numeric"
+                onChangeText={(text) => onChange(text.replace(/[^0-9]/g, ''))}
+                error={errors.edad?.message}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="tipoEntrada"
+            rules={{
+              required: 'Elegí un tipo de entrada',
+            }}
+            render={({ field: { onChange, value } }) => (
+              <TicketTypeSelector
+                label="Tipo de entrada"
+                value={value}
+                options={ticketOptions}
+                onChange={onChange}
+                error={errors.tipoEntrada?.message}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="telefono"
+            rules={{
+              validate: (value) =>
+                value === '' || /^\d+$/.test(value) || 'Solo se permiten números',
+            }}
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                label="Teléfono (opcional)"
+                value={value}
+                placeholder="Solo números"
+                keyboardType="numeric"
+                onChangeText={(text) => onChange(text.replace(/[^0-9]/g, ''))}
+                error={errors.telefono?.message}
+              />
+            )}
+          />
+
+          <Pressable style={styles.submitButton} onPress={handleSubmit(onSubmit)}>
+            <Text style={styles.submitButtonText}>Enviar inscripción</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+
+      <TicketConfirmation visible={modalVisible} data={submittedData} onClose={() => setModalVisible(false)} />
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: '#ffffff',
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 32,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  card: {
+    backgroundColor: '#ffffff',
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 8,
   },
   title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#000000',
     textAlign: 'center',
+    marginBottom: 4,
+    fontFamily: 'System',
   },
-  code: {
-    textTransform: 'uppercase',
+  subtitle: {
+    fontSize: 16,
+    color: '#3c3c43',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontFamily: 'System',
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  submitButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 8,
+    borderRadius: 8,
+  },
+  submitButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'System',
   },
 });
+
