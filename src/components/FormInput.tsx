@@ -7,7 +7,6 @@ type FormInputProps = {
   keyboardType?: KeyboardTypeOptions;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   onChangeText: (text: string) => void;
-  error?: string;
   secureTextEntry?: boolean;
 };
 
@@ -18,7 +17,6 @@ export function FormInput({
   keyboardType,
   autoCapitalize = 'sentences',
   onChangeText,
-  error,
   secureTextEntry = false,
 }: FormInputProps) {
   return (
@@ -32,9 +30,8 @@ export function FormInput({
         secureTextEntry={secureTextEntry}
         onChangeText={onChangeText}
         placeholderTextColor="#7d7f88"
-        style={[styles.input, error ? styles.inputError : null]}
+        style={styles.input}
       />
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
 }
@@ -48,7 +45,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#1c1c1e',
     marginBottom: 8,
-    fontFamily: 'System',
   },
   input: {
     backgroundColor: '#ffffff',
@@ -59,17 +55,5 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     color: '#000000',
     fontSize: 16,
-    fontFamily: 'System',
-  },
-  inputError: {
-    borderColor: '#d93025',
-    backgroundColor: '#ffffff',
-  },
-  errorText: {
-    color: '#d93025',
-    fontSize: 12,
-    marginTop: 6,
-    fontWeight: '400',
-    fontFamily: 'System',
   },
 });

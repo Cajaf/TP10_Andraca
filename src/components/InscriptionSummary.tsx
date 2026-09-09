@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#000000',
     marginBottom: 8,
-    fontFamily: 'System',
   },
   row: {
     paddingBottom: 8,
@@ -66,13 +65,11 @@ const styles = StyleSheet.create({
     color: '#3c3c43',
     marginBottom: 4,
     fontWeight: '400',
-    fontFamily: 'System',
     textTransform: 'uppercase',
   },
   value: {
     fontSize: 16,
     color: '#000000',
     fontWeight: '400',
-    fontFamily: 'System',
   },
 });

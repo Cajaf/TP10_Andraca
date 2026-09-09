@@ -6,4 +6,20 @@
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
+  --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
+
+html,
+body,
+#root,
+* {
+  font-family: var(--font-system);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+  

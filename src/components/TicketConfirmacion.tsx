@@ -8,13 +8,19 @@ type TicketConfirmationProps = {
 };
 
 export function TicketConfirmation({ visible, data, onClose }: TicketConfirmationProps) {
+  let summaryComponent = null;
+
+  if (data) {
+    summaryComponent = <InscriptionSummary data={data} />;
+  }
+
   return (
     <Modal transparent visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.modalCard}>
           <Text style={styles.title}>¡Inscripción confirmada!</Text>
 
-          {data ? <InscriptionSummary data={data} /> : null}
+          {summaryComponent}
 
           <Pressable onPress={onClose} style={styles.confirmButton}>
             <Text style={styles.confirmButtonText}>Cerrar</Text>
@@ -48,7 +54,6 @@ const styles = StyleSheet.create({
     color: '#000000',
     marginBottom: 18,
     textAlign: 'center',
-    fontFamily: 'System',
   },
   confirmButton: {
     marginTop: 22,
@@ -61,6 +66,5 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
-    fontFamily: 'System',
   },
 });

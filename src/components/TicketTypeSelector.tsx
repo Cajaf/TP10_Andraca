@@ -11,7 +11,6 @@ type TicketTypeSelectorProps = {
   value: string;
   options: TicketType[];
   onChange: (value: string) => void;
-  error?: string;
 };
 
 export function TicketTypeSelector({
@@ -19,13 +18,12 @@ export function TicketTypeSelector({
   value,
   options,
   onChange,
-  error,
 }: TicketTypeSelectorProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
 
-      <View style={[styles.dropdownContainer, error ? styles.dropdownError : null]}>
+      <View style={styles.dropdownContainer}>
         <Picker
           selectedValue={value}
           onValueChange={(itemValue: string | number) => onChange(String(itemValue))}
@@ -39,8 +37,6 @@ export function TicketTypeSelector({
           ))}
         </Picker>
       </View>
-
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
 }
@@ -54,7 +50,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#1c1c1e',
     marginBottom: 8,
-    fontFamily: 'System',
   },
   dropdownContainer: {
     borderWidth: 1,
@@ -63,19 +58,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#ffffff',
   },
-  dropdownError: {
-    borderColor: '#d93025',
-  },
   picker: {
     height: 48,
     color: '#000000',
-    fontFamily: 'System',
-  },
-  errorText: {
-    color: '#d93025',
-    fontSize: 12,
-    marginTop: 6,
-    fontWeight: '400',
-    fontFamily: 'System',
   },
 });
