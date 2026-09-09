@@ -1,8 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FormInput } from '@/components/FormInput';
 import { FestivalFormValues } from '@/components/InscriptionSummary';
 import { TicketConfirmation } from '@/components/TicketConfirmacion';
 import { TicketTypeSelector } from '@/components/TicketTypeSelector';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -61,9 +61,11 @@ export default function HomeScreen() {
 
   const formValues = watch();
 
+  const emailRegex = /^[^\s@]+@[^\s@]+$/;
+
   const isFormValid =
-    formValues.nombreCompleto?.trim().length >= 3 &&
-    formValues.email.includes('@') &&
+    formValues.nombreCompleto.trim().length >= 3 &&
+    emailRegex.test(formValues.email) &&
     Number(formValues.edad) >= 12 &&
     Number(formValues.edad) <= 99 &&
     !!formValues.tipoEntrada;
