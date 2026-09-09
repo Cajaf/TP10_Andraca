@@ -1,8 +1,9 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FormInput } from '@/components/FormInput';
 import { FestivalFormValues } from '@/components/InscriptionSummary';
 import { TicketConfirmation } from '@/components/TicketConfirmacion';
 import { TicketTypeSelector } from '@/components/TicketTypeSelector';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
   KeyboardAvoidingView,
@@ -23,11 +24,13 @@ const ticketOptions = [
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [submittedData, setSubmittedData] = useState<FestivalFormValues | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     control,
     handleSubmit,
     watch,
+    setValue,
   } = useForm<FestivalFormValues>({
     defaultValues: {
       nombreCompleto: '',
@@ -40,6 +43,22 @@ export default function HomeScreen() {
     reValidateMode: 'onSubmit',
   });
 
+  useEffect(() => {
+    const loadSavedEmail = async () => {
+      const savedEmail = await AsyncStorage.getItem('sonidoSurEmail');
+
+      if (savedEmail) {
+        setValue('email', savedEmail);
+      }
+    };
+
+    loadSavedEmail();
+  }, [setValue]);
+
+  const saveEmailToLocalStorage = async (email: string) => {
+    await AsyncStorage.setItem('sonidoSurEmail', email.trim());
+  };
+
   const formValues = watch();
 
   const isFormValid =
@@ -49,9 +68,16 @@ export default function HomeScreen() {
     Number(formValues.edad) <= 99 &&
     !!formValues.tipoEntrada;
 
-  const onSubmit = (data: FestivalFormValues) => {
-    setSubmittedData(data);
-    setModalVisible(true);
+  const onSubmit = async (data: FestivalFormValues) => {
+    setIsSubmitting(true);
+
+    await saveEmailToLocalStorage(data.email);
+
+    setTimeout(() => {
+      setSubmittedData(data);
+      setIsSubmitting(false);
+      setModalVisible(true);
+    }, 1000);
   };
 
   let keyboardBehavior: 'padding' | undefined;
@@ -151,13 +177,23 @@ export default function HomeScreen() {
 
           <Pressable
             style={buttonStyle}
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSubmitting}
             onPress={handleSubmit(onSubmit)}
           >
-            <Text style={styles.submitButtonText}>Enviar inscripción</Text>
+            <Text style={styles.submitButtonText}>
+              {isSubmitting ? 'Cargando...' : 'Enviar inscripción'}
+            </Text>
           </Pressable>
         </View>
       </ScrollView>
+
+      {isSubmitting ? (
+        <View style={styles.loadingOverlay} pointerEvents="none">
+          <View style={styles.loadingBox}>
+            <Text style={styles.loadingText}>Cargando...</Text>
+          </View>
+        </View>
+      ) : null}
 
       <TicketConfirmation visible={modalVisible} data={submittedData} onClose={() => setModalVisible(false)} />
     </KeyboardAvoidingView>
@@ -205,6 +241,29 @@ const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: 'rgba(255,255,255,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingBox: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  loadingText: {
+    color: '#000000',
     fontSize: 16,
     fontWeight: '600',
   },
