@@ -45,7 +45,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const loadSavedEmail = async () => {
-      const savedEmail = await AsyncStorage.getItem('sonidoSurEmail');
+      const savedEmail = await AsyncStorage.getItem('Email');
 
       if (savedEmail) {
         setValue('email', savedEmail);
@@ -56,7 +56,7 @@ export default function HomeScreen() {
   }, [setValue]);
 
   const saveEmailToLocalStorage = async (email: string) => {
-    await AsyncStorage.setItem('sonidoSurEmail', email.trim());
+    await AsyncStorage.setItem('Email', email);
   };
 
   const formValues = watch();
@@ -64,7 +64,7 @@ export default function HomeScreen() {
   const emailRegex = /^[^\s@]+@[^\s@]+$/;
 
   const isFormValid =
-    formValues.nombreCompleto.trim().length >= 3 &&
+    formValues.nombreCompleto.length >= 3 &&
     emailRegex.test(formValues.email) &&
     Number(formValues.edad) >= 12 &&
     Number(formValues.edad) <= 99 &&
