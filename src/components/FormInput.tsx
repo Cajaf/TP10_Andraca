@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '400',
-    color: '#1c1c1e',
+    color: '#ffffff',
     marginBottom: 8,
   },
   input: {

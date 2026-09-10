@@ -205,29 +205,29 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#7a0144',
   },
   scrollContent: {
     padding: 16,
     paddingBottom: 32,
   },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#53035a',
     padding: 16,
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    borderColor: '#000000',
     borderRadius: 8,
   },
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#000000',
+    color: '#ffffff',
     textAlign: 'center',
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 16,
-    color: '#3c3c43',
+    color: '#cecece',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   submitButtonDisabled: {
-    backgroundColor: '#d1d5db',
+    backgroundColor: '#7e7e7e',
   },
   submitButtonText: {
     color: '#ffffff',
