@@ -15,7 +15,7 @@ export function TicketConfirmation({ visible, data, onClose }: TicketConfirmatio
   }
 
   return (
-    <Modal transparent visible={visible} animationType="slide" onRequestClose={onClose}>
+    <Modal transparent visible={visible} animationType="slide">
       <View style={styles.overlay}>
         <View style={styles.modalCard}>
           <Text style={styles.title}>¡Inscripción confirmada!</Text>

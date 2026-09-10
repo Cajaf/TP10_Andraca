@@ -60,6 +60,6 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 48,
-    color: '#7d7f88',
+    color: '#000000'
   },
 });

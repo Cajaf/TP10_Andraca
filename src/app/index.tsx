@@ -6,8 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -82,14 +80,6 @@ export default function HomeScreen() {
     }, 1000);
   };
 
-  let keyboardBehavior: 'padding' | undefined;
-
-  if (Platform.OS === 'ios') {
-    keyboardBehavior = 'padding';
-  } else {
-    keyboardBehavior = undefined;
-  }
-
   let buttonStyle: typeof styles.submitButton;
 
   if (isFormValid) {
@@ -99,11 +89,8 @@ export default function HomeScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={keyboardBehavior}
-      style={styles.screen}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+   <>
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled" >
         <View style={styles.card}>
           <Text style={styles.title}>Sonido Sur</Text>
           <Text style={styles.subtitle}>Inscripción al festival</Text>
@@ -186,6 +173,7 @@ export default function HomeScreen() {
               {isSubmitting ? 'Cargando...' : 'Enviar inscripción'}
             </Text>
           </Pressable>
+        
         </View>
       </ScrollView>
 
@@ -198,18 +186,17 @@ export default function HomeScreen() {
       ) : null}
 
       <TicketConfirmation visible={modalVisible} data={submittedData} onClose={() => setModalVisible(false)} />
-    </KeyboardAvoidingView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: '#7a0144',
-  },
+
   scrollContent: {
     padding: 16,
     paddingBottom: 32,
+    flex: 1,
+    backgroundColor: '#7a0144',
   },
   card: {
     backgroundColor: '#53035a',
@@ -252,7 +239,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    backgroundColor: 'rgba(255,255,255,0.6)',
+    backgroundColor: 'rgba(226, 226, 226, 0.25)',
     justifyContent: 'center',
     alignItems: 'center',
   },
